@@ -1,11 +1,28 @@
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useState } from "react";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 import styles from "./Posts.module.scss";
 
-export function Posts({ author, publishedAt, content }) {
+interface Author {
+  avatarUrl: string;
+  name: string;
+  role: string;
+}
+
+interface Content {
+  type: "paragraph" | "link";
+  content: string;
+}
+
+interface PostProps {
+  author: Author;
+  content: Content[];
+  publishedAt: Date;
+}
+
+export function Posts({ author, publishedAt, content }: PostProps) {
   const [comments, setComments] = useState(["Muito show a publicação 👏"]);
 
   const [newCommentText, setNewCommentText] = useState("");
@@ -23,18 +40,18 @@ export function Posts({ author, publishedAt, content }) {
     locale: ptBR,
   });
 
-  function handleCreateNewComment(e) {
+  function handleCreateNewComment(e: FormEvent) {
     e.preventDefault();
     setComments([...comments, newCommentText]);
     setNewCommentText("");
   }
 
-  function handleNewCommentChange(e) {
+  function handleNewCommentChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setNewCommentText(e.target.value);
     e.target.setCustomValidity("");
   }
 
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     const comentsWithoutDeletedOne = comments.filter(
       (comment) => comment !== commentToDelete
     );
@@ -42,7 +59,7 @@ export function Posts({ author, publishedAt, content }) {
     setComments(comentsWithoutDeletedOne);
   }
 
-  function handleInvalidComment(e) {
+  function handleInvalidComment(e: InvalidEvent<HTMLTextAreaElement>) {
     e.target.setCustomValidity("Campo obrigatório para enviar comentário");
   }
 
