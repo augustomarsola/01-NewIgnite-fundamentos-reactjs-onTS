@@ -3,7 +3,12 @@ import { useState } from "react";
 import { Avatar } from "./Avatar";
 import styles from "./Comment.module.scss";
 
-export function Comment({ content, onDeleteComment }) {
+interface CommentsProps {
+  content: string;
+  onDeleteComment: (comment: string) => void;
+}
+
+export function Comment({ content, onDeleteComment }: CommentsProps) {
   const [clap, setClap] = useState(0);
 
   function handleDeleteComment() {
